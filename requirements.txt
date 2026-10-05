@@ -1,6 +1,6 @@
 selenium
 webdriver-manager
-pypdf
+pypdf==3.17.0
 charset-normalizer
 requests
 beautifulsoup4

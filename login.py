@@ -22,7 +22,6 @@ def doDownload(choice):
     dataNeeded["EVENTTARGET"] = books[choice-1].find_all("a")[0].get("id").replace("_", "$")
     dataNeeded["DigitalLicenceId"] = books[choice-1].find_all("input")[0].get("value").replace("_", "$")
     dataNeeded["DigitalLicenceNum"] = books[choice-1].find_all("input")[0].get("id")
-    #print(dataNeeded)
     requestHeader = {
         "Content-Type": "application/x-www-form-urlencoded"
     }
@@ -39,11 +38,12 @@ def doDownload(choice):
         dataNeeded["DigitalLicenceNum"]: dataNeeded["DigitalLicenceId"],
         "__VIEWSTATE": dataNeeded["VIEWSTATE"]
     }
-    #print(requestData)
+    for i in books[choice-1].find_all("input"): 
+        if i.get("id").endswith("ctl01_btnProductLink"): # for the books with online extras
+            requestData[i.get("id").replace("_", "$")] = "Book"
+            requestData["__EVENTTARGET"] = ""
     response = session.post("https://www.cgpbooks.co.uk/bookspacedemo?aliaspath=%2fYour-Online-Editions", headers=requestHeader, data=requestData)
-    print(response.status_code)
     soup = BeautifulSoup(response.text, 'html.parser')
-    #print(soup)
     requestData = {
         "UserGuid": soup.find_all(attrs={"name": "UserGuid"})[0].get("value"),
         "Signature": soup.find_all(attrs={"name": "Signature"})[0].get("value"),
@@ -51,11 +51,6 @@ def doDownload(choice):
         "DisplayTitle": soup.find_all(attrs={"name": "DisplayTitle"})[0].get("value")
     }
     response = session.post(soup.find_all(attrs={"name": "form"})[0].get("action"), data=requestData)
-    #print(session.cookies.get_dict())
-
-
-    response = session.get("https://library.cgpbooks.co.uk/digitalcontent/MAT52DF/assets/pager.js")
-    #print(response.status_code)
     download.down(id, session)
 
 if username and password:
@@ -111,9 +106,6 @@ print(f"Or input numbers seperated by commas to download multiple books. E.g '1,
 choice = input("What books would you like to download?")
 
 response = session.post("https://www.cgpbooks.co.uk/your-account", data=loginData)
-
-response = session.get("https://library.cgpbooks.co.uk/democontent/SAHR46DDF/assets/pager.js")
-print(response.text)
 
 if "," in choice:
     choices = choice.split(', ')

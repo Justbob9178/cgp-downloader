@@ -36,7 +36,7 @@ def download(url, session, bookId, bookPath, force=False):
     return None, None
 
 
-def down(bookId, requestSession):
+def down(bookId, session):
 
     print("Opening template file base.html")
     with open("template/base.html", "r") as baseFile:
@@ -80,7 +80,7 @@ def down(bookId, requestSession):
     # https://library.cgpbooks.co.uk/digitalcontent/{bookId}/assets/pager.js
     # https://library.cgpbooks.co.uk/digitalcontent/{bookId}/assets/common/pager.js
     print("Opening pager.json file")
-    pagerfile_path = pagerlib.get_pager_file(bookId, requestSession)
+    pagerfile_path = pagerlib.get_pager_file(bookId, session)
     print(pagerfile_path)
     if (pagerfile_path is None):
         print("Could not find pager file")
@@ -288,7 +288,7 @@ def down(bookId, requestSession):
         max_substrate_level = len(substratesizes)
         pagenumber_padded = str(page_number).zfill(4)
         substrate_url = "https://library.cgpbooks.co.uk/digitalcontent/" + bookId + "/assets/common/page-html5-substrates/page" + pagenumber_padded + "_" + str(max_substrate_level) + "." + substrate_format
-        fpath1_full, fpath_rel = download(substrate_url, requestSession, bookId, bookPath=bookPath)
+        fpath1_full, fpath_rel = download(substrate_url, session, bookId, bookPath=bookPath)
         if (fpath1_full != None):
             substrate_url = "./" + fpath_rel
             print("Using substrate url " + substrate_url)
@@ -296,14 +296,14 @@ def down(bookId, requestSession):
         if (doText):
             max_text_level = len(textsizes)
             text_url = "https://library.cgpbooks.co.uk/digitalcontent/" + bookId + "/assets/common/page-textlayers/page" + pagenumber_padded + "_" + str(max_text_level) + "." + "png" # + substrate_format
-            fpath2_full, fpath_rel = download(text_url, requestSession, bookId, bookPath=bookPath)
+            fpath2_full, fpath_rel = download(text_url, session, bookId, bookPath=bookPath)
             if (fpath2_full != None):
                 text_url = "./" + fpath_rel
                 print("Using text url " + text_url)
         doVectorText = (not has_notext) and has_textlayer and has_vectortext
         if doVectorText:
             vector_url = "https://library.cgpbooks.co.uk/digitalcontent/" + bookId + "/assets/common/page-vectorlayers/" + pagenumber_padded + ".svg"
-            fpath3_full, fpath_rel = download(vector_url, requestSession, bookId, bookPath=bookPath)
+            fpath3_full, fpath_rel = download(vector_url, session, bookId, bookPath=bookPath)
             if (fpath3_full != None):
                 vector_url = "./" + fpath_rel
                 print("Using vector url " + vector_url)
@@ -380,4 +380,4 @@ def down(bookId, requestSession):
 
     ###
 
-    convert.doConvert(bookId=bookId)
+    convert.doConvert(bookId, session)

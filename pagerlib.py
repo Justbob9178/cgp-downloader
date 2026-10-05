@@ -38,7 +38,6 @@ def download_file_test_url(urls, bookid, output_file, session):
             print(response.status_code)
             if response.status_code != 200:
                 print(f"received {response.status_code} status code")
-                print(session.gookies.get())
             else:
                 workspace = response.text
                 if "NoSuchKey" in workspace:
@@ -55,16 +54,16 @@ def download_file_test_url(urls, bookid, output_file, session):
     print("Failed to get file file for " + bookid + " from any URL (tried " + str(len(urls)) + ")")
     return None
 
-def get_workspace_file(book):
+def get_workspace_file(bookId, session):
     # Return the workspace file for the given book.
-    workspace_path = os.path.join(get_book_dir(book), 'workspace.js')
+    workspace_path = os.path.join(get_book_dir(bookId), 'workspace.js')
     if os.path.exists(workspace_path):
         return workspace_path
-    return download_file_test_url(workspace_try_urls, book, workspace_path)
+    return download_file_test_url(urls=workspace_try_urls, bookid=bookId, output_file=workspace_path, session=session)
 
-def get_pager_file(book, session):
+def get_pager_file(bookId, session):
     # Return the pager file for the given book.
-    pager_path = os.path.join(get_book_dir(book), 'pager.js')
+    pager_path = os.path.join(get_book_dir(bookId), 'pager.js')
     if os.path.exists(pager_path):
         return pager_path
-    return download_file_test_url(urls=pager_try_urls, bookid=book, output_file=pager_path, session=session)
+    return download_file_test_url(urls=pager_try_urls, bookid=bookId, output_file=pager_path, session=session)

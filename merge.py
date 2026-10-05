@@ -6,13 +6,13 @@ import pagerlib
 from pypdf import PdfWriter, PdfReader
 
 
-def doMerge(bookId):
+def doMerge(bookId, session):
     if (not os.path.exists(os.path.join("output", bookId))):
         print("Output folder does not exist. Please run the download.py script first.")
         exit()
 
     print("Opening pager.json file")
-    pagerfile_path = pagerlib.get_pager_file(bookId)
+    pagerfile_path = pagerlib.get_pager_file(bookId, session)
     if (pagerfile_path is None):
         print("Could not find pager file")
         exit(1)
@@ -21,7 +21,7 @@ def doMerge(bookId):
         pagerFile.close()
 
     print("Opening workspace.json file")
-    workspacefile_path = pagerlib.get_workspace_file(bookId)
+    workspacefile_path = pagerlib.get_workspace_file(bookId, session)
     if (workspacefile_path is None):
         print("Could not find workspace file")
         exit(1)

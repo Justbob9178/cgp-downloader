@@ -6,7 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.common.print_page_options import PrintOptions
 
-def doConvert(bookId):
+import merge
+
+def doConvert(bookId, session):
 
     print("Loading ChromeDriver")
     opts = ChromeOptions()
@@ -74,3 +76,5 @@ def doConvert(bookId):
     print("Closing ChromeDriver")
     driver.quit()
     print("Done!")
+
+    merge.doMerge(bookId, session)
