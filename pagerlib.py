@@ -1,10 +1,4 @@
-import os, requests, logging
-import logconf
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logconf.loggerLevel)
-
-from cookielib import cookies
+import os
 
 workspace_try_urls = [
     "https://library.cgpbooks.co.uk/digitalcontent/{id}/assets/html/workspace.js",
@@ -35,25 +29,30 @@ def get_file_contents(filename):
         pass
     return contents
 
-def download_file_test_url(urls, bookid, output_file):
+def download_file_test_url(urls, bookid, output_file, session):
     for url in urls:
         try:
             book_url = url.replace("{id}", bookid)
-            logger.debug("Trying " + book_url)
-            headers = {'Cookie': cookies}
-            workspace = requests.get(book_url, headers=headers).text
-            if "NoSuchKey" in workspace:
-                logger.info("Failed to get workspace file from " + book_url)
-                continue
-            logger.debug("Writing to " + output_file)
-            with open(output_file, 'w') as workspace_file:
-                workspace_file.write(workspace)
-            return output_file
+            print("Trying " + book_url)
+            response = session.get(book_url)
+            print(response.status_code)
+            if response.status_code != 200:
+                print(f"received {response.status_code} status code")
+                print(session.gookies.get())
+            else:
+                workspace = response.text
+                if "NoSuchKey" in workspace:
+                    print("Failed to get workspace file from " + book_url)
+                    continue
+                print("Writing to " + output_file)
+                with open(output_file, 'w') as workspace_file:
+                    workspace_file.write(workspace)
+                return output_file
         except Exception as error:
             print("An exception occurred:", error)
-            logger.info("Failed to get workspace file from " + book_url)
+            print("Failed to get workspace file from " + book_url)
             continue
-    logger.error("Failed to get file file for " + bookid + " from any URL (tried " + str(len(urls)) + ")")
+    print("Failed to get file file for " + bookid + " from any URL (tried " + str(len(urls)) + ")")
     return None
 
 def get_workspace_file(book):
@@ -63,9 +62,9 @@ def get_workspace_file(book):
         return workspace_path
     return download_file_test_url(workspace_try_urls, book, workspace_path)
 
-def get_pager_file(book):
+def get_pager_file(book, session):
     # Return the pager file for the given book.
     pager_path = os.path.join(get_book_dir(book), 'pager.js')
     if os.path.exists(pager_path):
         return pager_path
-    return download_file_test_url(pager_try_urls, book, pager_path)
+    return download_file_test_url(urls=pager_try_urls, bookid=book, output_file=pager_path, session=session)
