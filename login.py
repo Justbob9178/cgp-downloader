@@ -44,7 +44,7 @@ def doDownload(choice):
             requestData["__EVENTTARGET"] = ""
     response = session.post("https://www.cgpbooks.co.uk/bookspacedemo?aliaspath=%2fYour-Online-Editions", headers=requestHeader, data=requestData)
     soup = BeautifulSoup(response.text, 'html.parser')
-    id = soup.find_all("form")[0].get("action").split("/")[4] # for whatever the id is not what it tells you when you hover over the book in your library however this tells you the id
+    id = soup.find_all("form")[0].get("action").split("/")[4] # for whatever sometimes the id is not what it tells you when you hover over the book in your library however this tells you the id
     requestData = {
         "UserGuid": soup.find_all(attrs={"name": "UserGuid"})[0].get("value"),
         "Signature": soup.find_all(attrs={"name": "Signature"})[0].get("value"),
