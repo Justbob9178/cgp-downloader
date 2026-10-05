@@ -7,7 +7,7 @@ This is an updated version of [this](https://github.com/TheJoeCoder/cgp-download
 
 ## Running
 Documentation is currently not finished and the software is still a work-in-progress, but here's a quick rundown:
-* Install Python and Git if you don't already have them.
+* Install Python, Git and Chromium if you don't already have them.
 * Clone the repo: `git clone https://github.com/Justbob9178/cgp-smarter-download`
 * CD into directory: `cd cgp-smarter-download`
 * This next step assumes you are using linux - Windows users you are on your own for a few steps (google python venv)
