@@ -48,7 +48,7 @@ def doMerge(bookId, session):
                 bookmark(child["children"], new_parent)
 
     # Merge pdfs into one
-    for pdf in os.listdir(os.path.join("output", bookId)):
+    for pdf in sorted(os.listdir(os.path.join("output", bookId))):
         if (pdf.endswith(".pdf")):
             print("Merging " + pdf)
             # Read file
